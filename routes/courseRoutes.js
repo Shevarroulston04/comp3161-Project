@@ -5,9 +5,9 @@ const router = express.Router();
 
 router.post('/courses', authenticateToken, requireRole('admin'), async (req, res) => {
   try {
-    const { courseCode, courseName, courseDescription, lecturerID } = req.body;
-    if (!courseCode || !courseName || !lecturerID) {
-      return res.status(400).json({ error: 'courseCode, courseName and lecturerID are required' });
+    const { courseName, lecturerID } = req.body;
+    if (!courseName || !lecturerID) {
+      return res.status(400).json({ error: 'courseName and lecturerID are required' });
     }
 
     const [lecturer] = await pool.query('SELECT lecturerID FROM Lecturers WHERE lecturerID = ?', [lecturerID]);
@@ -17,11 +17,10 @@ router.post('/courses', authenticateToken, requireRole('admin'), async (req, res
     if (countRows[0].total >= 5) return res.status(400).json({ error: 'Lecturer already teaches 5 courses' });
 
     const [result] = await pool.query(
-      `INSERT INTO Course (courseCode, courseName, courseDescription, lecturerID, adminID)
-       VALUES (?, ?, ?, ?, ?)`,
-      [courseCode, courseName, courseDescription || null, lecturerID, req.user.idNumber]
+      'INSERT INTO Course (courseName, lecturerID, adminID) VALUES (?, ?, ?)',
+      [courseName, lecturerID, req.user.idNumber]
     );
-    res.status(201).json({ courseID: result.insertId, courseCode, courseName, courseDescription, lecturerID, adminID: req.user.idNumber });
+    res.status(201).json({ courseID: result.insertId, courseName, lecturerID, adminID: req.user.idNumber });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
