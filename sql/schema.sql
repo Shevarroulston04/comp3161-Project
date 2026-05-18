@@ -2,7 +2,7 @@
 -- EduVLE Course Management System — Database Schema
 -- COMP3161 Final Project
 --
--- Matches the group's edu_db.sql exactly, with two additions:
+--  two additions:
 --   1. AUTO_INCREMENT on PKs so the REST API can insert without
 --      knowing the next ID (the Python seeder's explicit IDs
 --      still work fine with AUTO_INCREMENT).
@@ -145,7 +145,7 @@ CREATE INDEX idx_thread_forum      ON Thread(forumNumber);
 CREATE INDEX idx_thread_parent     ON Thread(parentThreadID);
 CREATE INDEX idx_submit_assignment ON Submit(assignmentNumber);
 
--- ── Required views (view names match the group's edu_db.sql) ─
+-- ── Required views  ─
 -- 1. All courses with 50+ students
 CREATE VIEW CoursesWithFiftyPlusStudents AS
 SELECT c.courseID, c.courseName, COUNT(e.studentID) AS studentCount
